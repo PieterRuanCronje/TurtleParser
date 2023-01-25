@@ -7,14 +7,6 @@ import java.util.regex.Pattern;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-/*
- * REMEMBER TO CHECK FOR @BASE IN TTL
- * more turtle syntax support
- * blank node support
- * tuple support
- * thorough documentation
- */
-
 public class TurtleParser {
 
 	private ArrayList<String[]> TRIPLE_STORE = new ArrayList<String[]>();
