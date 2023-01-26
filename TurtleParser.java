@@ -41,7 +41,7 @@ public class TurtleParser {
 		removePrefixStatements();
 	}
 
-	public void printData() {
+	public void printDataCSV() {
 		System.out.println("Subject\tPredicate\tObject");
 		int count;
 		for (String[] triple : TRIPLE_STORE) {
@@ -52,6 +52,37 @@ public class TurtleParser {
 				count++;
 			}
 			System.out.println();
+		}
+	}
+
+	public void printDataTurtle() {
+		boolean hasBase = false;
+		for (String prefix : prefixes)
+			if (prefix.equals("base:")) hasBase = true;
+		for (String[] triple : TRIPLE_STORE) {
+			if (triple[0].startsWith("blank_node_") || triple[0].startsWith("collection_")) {
+				 if (hasBase) System.out.print("<" + prefixURLs.get(prefixes.indexOf("base:")) + triple[0] + "> ");
+				 else System.out.print("<http://www.example-domain.org#" + triple[0] + "> ");
+			} else
+				System.out.print("<" + triple[0] + "> ");
+			if (triple[1].startsWith("element_")) {
+				if (hasBase) System.out.print("<" + prefixURLs.get(prefixes.indexOf("base:")) + triple[1] + "> ");
+				 else System.out.print("<http://www.example-domain.org#" + triple[1] + "> ");
+			} else
+				System.out.print("<" + triple[1] + "> ");
+			if (triple[2].startsWith("blank_node_") || triple[2].startsWith("collection_")) {
+				if (hasBase) System.out.println("<" + prefixURLs.get(prefixes.indexOf("base:")) + triple[2] + "> .");
+				else System.out.println("<http://www.example-domain.org#" + triple[2] + "> .");
+			} else if (triple[2].startsWith("\"") || !triple[2].startsWith("http")) {
+				if (triple[2].contains("^^")) {
+					int literalEnd = triple[2].indexOf("\"^^");
+					System.out.println(triple[2].substring(0, literalEnd+3) + "<" + triple[2].substring(literalEnd+3,triple[2].length()) + "> .");
+				} else if (triple[2].startsWith("\""))
+					System.out.println(triple[2] + " .");
+				else
+					System.out.println("\"" + triple[2] + "\"" + " .");
+			} else
+				System.out.println("<" + triple[2] + "> .");
 		}
 	}
 
@@ -76,6 +107,10 @@ public class TurtleParser {
 		data_string = data_string.replaceAll("\\\\\"", "");
 		data_string = data_string.replaceAll("\\s+", " ");
 		data_string = data_string.replaceAll("@base", "@prefix :");
+
+		// while (data_string.contains("[]")) {
+		// 	data_string = data_string.replaceFirst("\\[]", "blank_node_(id=" + (BLANK_ID++) + ")");
+		// }
 
 		Pattern pattern = Pattern.compile("<(.*?)>");
 		Matcher matcher = pattern.matcher(data_string);

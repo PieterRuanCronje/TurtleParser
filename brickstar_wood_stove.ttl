@@ -14,8 +14,8 @@ aiap:Baseline_Methodology a aia:Methodology ;
 aia:hasMethodology aiap:Baseline_Methodology;.
 
 aiap:Brickstar_Wood_Stove aia:hasObjective "End-user energy efficiency improvement."^^xsd:string ; aia:hasSDG sdg:1,sdg:2,sdg:3,sdg:7,sdg:10,sdg:15 .
-aiap:Brickstar_Wood_Stove rdfs:seeAlso <hhtp://www.example.org/stove-specs> .
-aiap:Brickstar_Wood_Stove rdfs:seeAlso <hhtp://www.example.org/emission_reduction_data> .
+aiap:Brickstar_Wood_Stove rdfs:seeAlso <http://www.example.org/stove-specs> .
+aiap:Brickstar_Wood_Stove rdfs:seeAlso <http://www.example.org/emission_reduction_data> .
 
 aiap:Brickstar_Wood_Stove prov:startedAtTime "7 January 2015"^^xsd:string .
 aiap:Brickstar_Wood_Stove prov:endedAtTime "7 January 2025"^^xsd:string .
