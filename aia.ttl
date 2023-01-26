@@ -5,7 +5,7 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix time: <http://www.w3.org/2006/time#> .
-# @base <http://www.semanticweb.org/lucia/ontologies/2023/0/aia> .
+@base <http://www.semanticweb.org/lucia/ontologies/2023/0/aia> .
 
 <http://www.semanticweb.org/lucia/ontologies/2023/0/aia> rdf:type owl:Ontology .
 

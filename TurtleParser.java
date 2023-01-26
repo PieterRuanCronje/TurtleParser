@@ -75,6 +75,7 @@ public class TurtleParser {
 		data_string = data_string.replaceAll("\"{4," + data_string.length() + "}", "");
 		data_string = data_string.replaceAll("\\\\\"", "");
 		data_string = data_string.replaceAll("\\s+", " ");
+		data_string = data_string.replaceAll("@base", "@prefix :");
 
 		Pattern pattern = Pattern.compile("<(.*?)>");
 		Matcher matcher = pattern.matcher(data_string);
@@ -441,7 +442,7 @@ public class TurtleParser {
 			if (entry.startsWith(" ")) entry = entry.substring(1, entry.length());
 			if (entry.endsWith(" ")) entry = entry.substring(0, entry.length() - 1);
 			String[] predicate_and_object = entry.split("\\s");
-			TRIPLE_STORE.add(new String[]{"blank_node_(" + blank_id + ")", predicate_and_object[0], predicate_and_object[1]});
+			TRIPLE_STORE.add(new String[]{"blank_node_(id=" + blank_id + ")", predicate_and_object[0], predicate_and_object[1]});
 		}
 	}
 
