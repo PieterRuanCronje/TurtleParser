@@ -24,14 +24,17 @@ public class TurtleParser {
 	private String PREFIX = ":";
 	private String PREFIX_URL = "www.example.org";
 
-	public TurtleParser(String fileName) {
+	private int COLLECTION_ID = 0;
+	private int BLANK_ID = 0;
 
+	public TurtleParser(String fileName) {
 		String[] data = readData(fileName);
 		String[][] triples = splitTriples(data);
-		
 		expandTriples(triples);
+		processBlankNodesAndCollections();
 		insertLiterals();
 		insertURLs();
+		replaceBlankAndCollectionIDs();
 		removeNewLines();
 		collectPrefixes();
 		replacePrefixes();
@@ -39,9 +42,14 @@ public class TurtleParser {
 	}
 
 	public void printData() {
+		System.out.println("Subject\tPredicate\tObject");
+		int count;
 		for (String[] triple : TRIPLE_STORE) {
+			count = 0;
 			for (String component : triple) {
-				System.out.print(component + "\t");
+				System.out.print(component );
+				if (count < 2) System.out.print("\t");
+				count++;
 			}
 			System.out.println();
 		}
@@ -335,7 +343,7 @@ public class TurtleParser {
 
 	private String harvestBlankNodes(String data) {
 		Stack<Integer> openBrackets = new Stack<Integer>();
-		int openBracketIndex = -1, closedBracketIndex = -1, blank_id = 0;
+		int openBracketIndex = -1, closedBracketIndex = -1;
 		String subString = "";
 		for (int i = 0; i < data.length(); i++) {
 			if (data.charAt(i) == '[') openBrackets.push(i);
@@ -344,7 +352,7 @@ public class TurtleParser {
 				closedBracketIndex = i;
 				subString = data.substring(openBracketIndex+1, closedBracketIndex);
 				BLANK_NODES.add(subString);
-				data = data.replace("[" + subString + "]", " ~!BLANK<" + (blank_id++) + ">!~ " + whiteSpaceForBlankNode(subString, blank_id));
+				data = data.replace("[" + subString + "]", " ~!BLANK<" + (BLANK_ID++) + ">!~ " + whiteSpaceForBlankNode(subString, BLANK_ID));
 			}
 		}
 		return data;
@@ -365,7 +373,7 @@ public class TurtleParser {
 
 	private String harvestCollections(String data) {
 		Stack<Integer> openBrackets = new Stack<Integer>();
-		int openBracketIndex = -1, closedBracketIndex = -1, collection_id = 0;
+		int openBracketIndex = -1, closedBracketIndex = -1;
 		String subString = "";
 		for (int i = 0; i < data.length(); i++) {
 			if (data.charAt(i) == '(') openBrackets.push(i);
@@ -374,7 +382,7 @@ public class TurtleParser {
 				closedBracketIndex = i;
 				subString = data.substring(openBracketIndex+1, closedBracketIndex);
 				COLLECTIONS.add(subString);
-				data = data.replace("(" + subString + ")", " ~!COLLECTION<" + (collection_id++) + ">!~ " + whiteSpaceForCollection(subString, collection_id));
+				data = data.replace("(" + subString + ")", " ~!COLLECTION<" + (COLLECTION_ID++) + ">!~ " + whiteSpaceForCollection(subString, COLLECTION_ID));
 			}
 		}
 		return data;
@@ -391,5 +399,58 @@ public class TurtleParser {
 			whiteSpace += " ";
 		}
 		return whiteSpace;
+	}
+
+	private void replaceBlankAndCollectionIDs() {
+		Pattern pattern = Pattern.compile("<(.*?)>");
+		Matcher matcher;
+		int id = 0;
+
+		for (String[] triple : TRIPLE_STORE) {
+			if (triple[2].contains("~!BLANK")) {
+				matcher = pattern.matcher(triple[2]);
+				if (matcher.find()) id = Integer.parseInt(matcher.group(1));
+				triple[2] = "blank_node_(id=" + id + ")";
+			} else if (triple[2].contains("~!COLLECTION")) {
+				matcher = pattern.matcher(triple[2]);
+				if (matcher.find()) id = Integer.parseInt(matcher.group(1));
+				triple[2] = "collection_(id=" + id + ")";
+			}
+		}
+	}
+
+	private void processBlankNodesAndCollections() {
+		for (int i = 0; i < COLLECTIONS.size(); i++) {
+			String collection = COLLECTIONS.get(i);
+			collection = harvestBlankNodes(collection);
+			processCollection(collection, i);
+		}
+		for (int i = 0; i < BLANK_NODES.size(); i++) {
+			processBlankNode(BLANK_NODES.get(i), i);
+		}
+	}
+
+	private void processBlankNode(String blank, int blank_id) {
+		blank = blank.replaceAll("\\s+", " ");
+		if (blank.endsWith(" ")) blank = blank.substring(0, blank.length()-1);
+		if (blank.endsWith(";") || blank.endsWith(".")) blank = blank.substring(0, blank.length()-1);
+		if (blank.endsWith(" ")) blank = blank.substring(0, blank.length()-1);
+		
+		String[] entries = blank.split(";");
+		for (String entry : entries) {
+			if (entry.startsWith(" ")) entry = entry.substring(1, entry.length());
+			if (entry.endsWith(" ")) entry = entry.substring(0, entry.length() - 1);
+			String[] predicate_and_object = entry.split("\\s");
+			TRIPLE_STORE.add(new String[]{"blank_node_(" + blank_id + ")", predicate_and_object[0], predicate_and_object[1]});
+		}
+	}
+
+	private void processCollection(String collection, int collection_id) {
+		collection = collection.replaceAll("\\s+", " ");
+		if (collection.startsWith(" ")) collection = collection.substring(1, collection.length());
+		String[] items = collection.split(" ");
+		for (int i = 0; i < items.length; i++) {
+			TRIPLE_STORE.add(new String[]{"collection_(id=" + collection_id + ")", "element_(#" + (i+1) + ")", items[i]});
+		}
 	}
 }
