@@ -204,8 +204,8 @@ public class TurtleParser {
 				TRIPLE_STORE.add(new String[]{super_subject, super_predicate, super_object});
 		}
 
-		for (String[] arr : TRIPLE_STORE)
-			if (arr[0].equals("")) TRIPLE_STORE.remove(arr);
+		for (String[] triple : TRIPLE_STORE)
+			if (triple[0].equals("")) TRIPLE_STORE.remove(triple);
 	}
 
 	private void eliminateWhiteSpace(String[][] triples) {
@@ -450,8 +450,7 @@ public class TurtleParser {
 		collection = collection.replaceAll("\\s+", " ");
 		if (collection.startsWith(" ")) collection = collection.substring(1, collection.length());
 		String[] items = collection.split(" ");
-		for (int i = 0; i < items.length; i++) {
+		for (int i = 0; i < items.length; i++)
 			TRIPLE_STORE.add(new String[]{"collection_(id=" + collection_id + ")", "element_(#" + (i+1) + ")", items[i]});
-		}
 	}
 }
