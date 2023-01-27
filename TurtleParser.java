@@ -183,9 +183,8 @@ public class TurtleParser {
 		while (data_string.contains("~!LITERAL1!~"))
 			data_string = data_string.replaceFirst("~!LITERAL1!~", "~!LITERAL1<" + (literal_id_1++) + ">!~");
 
-		while (data_string.contains("#")) {
+		while (data_string.contains("#"))
 			data_string = data_string.replaceFirst("#(.*?)~!NEWLINE!~", "");
-		}
 
 		data_string = data_string.replaceAll("\\s+", " ");
 		data_string = data_string.replaceAll("~!NEWLINE!~", " ");
