@@ -141,9 +141,8 @@ public class TurtleParser {
 
 		Pattern pattern = Pattern.compile("<(.*?)>");
 		Matcher matcher = pattern.matcher(data_string);
-		while(matcher.find()) {
+		while(matcher.find())
 			URLs.add(matcher.group(1));
-		}
 
 		int url_id = 0;
 		data_string = data_string.replaceAll("<(.*?)>", " ~!URL!~ ");
@@ -152,23 +151,20 @@ public class TurtleParser {
 
 		pattern = Pattern.compile("\"\"\"(.*?)\"\"\"");
 		matcher = pattern.matcher(data_string);
-		while(matcher.find()) {
+		while(matcher.find())
 			LITERALS3.add(matcher.group(1));
-		}
 		data_string = data_string.replaceAll("\"\"\"(.*?)\"\"\"", "~!LITERAL3!~");
 		
 		pattern = Pattern.compile("\"(.*?)\"");
 		matcher = pattern.matcher(data_string);
-		while(matcher.find()) {
+		while(matcher.find())
 			LITERALS2.add(matcher.group(1));
-		}
 		data_string = data_string.replaceAll("\"(.*?)\"", "~!LITERAL2!~");
 		
 		pattern = Pattern.compile("'(.*?)'");
 		matcher = pattern.matcher(data_string);
-		while(matcher.find()) {
+		while(matcher.find())
 			LITERALS1.add(matcher.group(1));
-		}
 		data_string = data_string.replaceAll("'(.*?)'", "~!LITERAL1!~");
 
 		int literal_id_3 = 0;
@@ -474,9 +470,8 @@ public class TurtleParser {
 		spaceFilled += id.length();
 		int spaceNeeded = spaceRemoved - spaceFilled;
 		String whiteSpace = "";
-		for (int i = 0; i < spaceNeeded; i++) {
+		for (int i = 0; i < spaceNeeded; i++)
 			whiteSpace += " ";
-		}
 		return whiteSpace;
 	}
 
