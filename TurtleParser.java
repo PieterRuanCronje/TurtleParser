@@ -515,9 +515,8 @@ public class TurtleParser {
 		spaceFilled += id.length();
 		int spaceNeeded = spaceRemoved - spaceFilled;
 		String whiteSpace = "";
-		for (int i = 0; i < spaceNeeded; i++) {
+		for (int i = 0; i < spaceNeeded; i++)
 			whiteSpace += " ";
-		}
 		return whiteSpace;
 	}
 
@@ -560,9 +559,8 @@ public class TurtleParser {
 			collection = harvestBlankNodes(collection);
 			processCollection(collection, i);
 		}
-		for (int i = 0; i < BLANK_NODES.size(); i++) {
+		for (int i = 0; i < BLANK_NODES.size(); i++)
 			processBlankNode(BLANK_NODES.get(i), i);
-		}
 	}
 
 	/**
