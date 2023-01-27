@@ -1,4 +1,4 @@
-## RDF-Turtle-Parser
+## RDF Turtle Parser
     * Overview
     * Implementation
     * Usage
