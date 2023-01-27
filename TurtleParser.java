@@ -59,11 +59,12 @@ public class TurtleParser {
 		boolean hasBase = false;
 		for (String prefix : prefixes)
 			if (prefix.equals("base:")) hasBase = true;
+
 		for (String[] triple : TRIPLE_STORE) {
-			if (triple[0].startsWith("blank_node_") || triple[0].startsWith("collection_")) {
+			if (triple[0].startsWith("blank_node_") || triple[0].startsWith("collection_") || !triple[0].startsWith("http")) {
 				 if (hasBase) System.out.print("<" + prefixURLs.get(prefixes.indexOf("base:")) + triple[0] + "> ");
 				 else System.out.print("<http://www.example-domain.org#" + triple[0] + "> ");
-			} else
+			} else 
 				System.out.print("<" + triple[0] + "> ");
 			if (triple[1].startsWith("element_")) {
 				if (hasBase) System.out.print("<" + prefixURLs.get(prefixes.indexOf("base:")) + triple[1] + "> ");
@@ -74,7 +75,7 @@ public class TurtleParser {
 				if (hasBase) System.out.println("<" + prefixURLs.get(prefixes.indexOf("base:")) + triple[2] + "> .");
 				else System.out.println("<http://www.example-domain.org#" + triple[2] + "> .");
 			} else if (triple[2].startsWith("\"") || !triple[2].startsWith("http")) {
-				if (triple[2].contains("^^")) {
+				if (triple[2].contains("\"^^")) {
 					int literalEnd = triple[2].indexOf("\"^^");
 					System.out.println(triple[2].substring(0, literalEnd+3) + "<" + triple[2].substring(literalEnd+3,triple[2].length()) + "> .");
 				} else if (triple[2].startsWith("\""))
@@ -107,10 +108,6 @@ public class TurtleParser {
 		data_string = data_string.replaceAll("\\\\\"", "");
 		data_string = data_string.replaceAll("\\s+", " ");
 		data_string = data_string.replaceAll("@base", "@prefix :");
-
-		// while (data_string.contains("[]")) {
-		// 	data_string = data_string.replaceFirst("\\[]", "blank_node_(id=" + (BLANK_ID++) + ")");
-		// }
 
 		Pattern pattern = Pattern.compile("<(.*?)>");
 		Matcher matcher = pattern.matcher(data_string);
@@ -157,12 +154,9 @@ public class TurtleParser {
 			data_string = data_string.replaceFirst("~!LITERAL1!~", "~!LITERAL1<" + (literal_id_1++) + ">!~");
 
 		while (data_string.contains("#")) {
-			int commentIndex = data_string.indexOf("#");
-			int newLineIndex = data_string.indexOf("~!NEWLINE!~", commentIndex);
-			String substring = data_string.substring(commentIndex, newLineIndex);
-			data_string = data_string.replace(substring, "");
+			data_string = data_string.replaceFirst("#(.*?)~!NEWLINE!~", "");
 		}
-		
+
 		data_string = data_string.replaceAll("\\s+", " ");
 		data_string = data_string.replaceAll("~!NEWLINE!~", " "); // HIER IS 'N VERANDERING'
 		data_string = data_string.replaceAll("\\s+", " ");
@@ -441,8 +435,16 @@ public class TurtleParser {
 		Pattern pattern = Pattern.compile("<(.*?)>");
 		Matcher matcher;
 		int id = 0;
-
 		for (String[] triple : TRIPLE_STORE) {
+			if (triple[0].contains("~!BLANK")) {
+				matcher = pattern.matcher(triple[2]);
+				if (matcher.find()) id = Integer.parseInt(matcher.group(1));
+				triple[0] = "blank_node_(id=" + id + ")";
+			} else if (triple[0].contains("~!COLLECTION")) {
+				matcher = pattern.matcher(triple[2]);
+				if (matcher.find()) id = Integer.parseInt(matcher.group(1));
+				triple[0] = "collection_(id=" + id + ")";
+			}
 			if (triple[2].contains("~!BLANK")) {
 				matcher = pattern.matcher(triple[2]);
 				if (matcher.find()) id = Integer.parseInt(matcher.group(1));
@@ -477,7 +479,7 @@ public class TurtleParser {
 			if (entry.startsWith(" ")) entry = entry.substring(1, entry.length());
 			if (entry.endsWith(" ")) entry = entry.substring(0, entry.length() - 1);
 			String[] predicate_and_object = entry.split("\\s");
-			TRIPLE_STORE.add(new String[]{"blank_node_(id=" + blank_id + ")", predicate_and_object[0], predicate_and_object[1]});
+			if (predicate_and_object.length == 2) TRIPLE_STORE.add(new String[]{"blank_node_(id=" + blank_id + ")", predicate_and_object[0], predicate_and_object[1]});
 		}
 	}
 
