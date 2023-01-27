@@ -7,14 +7,24 @@ import java.util.regex.Pattern;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+/**
+ * A Java program for converting standard RDF Turtle data into a simplified triple format.
+ * The output data can either be in CSV or Turtle format but the program can be easily modified to allow other formats.
+ * Blank nodes and collections are given human-readable IDs to allow for hassle-free analysis after the data is processed.
+ * The processed data can be queried using a SPARQL endpoint which can be tested by uploading the data to a platform like Triply. {@link https://triplydb.com/}
+ * It is also possible to upload the data to a SQL database because of its rectangular shape.
+ * The following resources can be useful for understanding RDF data: {@link https://open.hpi.de/courses/semanticweb2016/}, {@link https://www.stardog.com/trainings/}
+ * {@author Pieter-Ruan Cronje}
+ */
+
 public class TurtleParser {
 
 	private ArrayList<String[]> TRIPLE_STORE = new ArrayList<String[]>();
 
 	private ArrayList<String> URLs = new ArrayList<String>();
-	private ArrayList<String> LITERALS1 = new ArrayList<String>();
-	private ArrayList<String> LITERALS2 = new ArrayList<String>();
-	private ArrayList<String> LITERALS3 = new ArrayList<String>();
+	private ArrayList<String> LITERALS1 = new ArrayList<String>(); // For strings enclosed withing '...'
+	private ArrayList<String> LITERALS2 = new ArrayList<String>(); // For strings enclosed withing "..."
+	private ArrayList<String> LITERALS3 = new ArrayList<String>(); // For strings enclosed withing """..."""
 	private ArrayList<String> BLANK_NODES = new ArrayList<String>();
 	private ArrayList<String> COLLECTIONS = new ArrayList<String>();
 
@@ -27,6 +37,10 @@ public class TurtleParser {
 	private int COLLECTION_ID = 0;
 	private int BLANK_ID = 0;
 
+	/**
+	 * Creates an instance of the turtle parser.
+	 * @param fileName name of the file containing the turtle data.
+	 */
 	public TurtleParser(String fileName) {
 		String[] data = readData(fileName);
 		String[][] triples = splitTriples(data);
@@ -41,6 +55,9 @@ public class TurtleParser {
 		removePrefixStatements();
 	}
 
+	/**
+	 * Outputs the data in CSV format with a header and tabs as the delimeter.
+	 */
 	public void printDataCSV() {
 		System.out.println("Subject\tPredicate\tObject");
 		int count;
@@ -55,11 +72,15 @@ public class TurtleParser {
 		}
 	}
 
+	/**
+	 * Outputs the data in RDF Turtle format.
+	 * Blank node and collection IDs are given the base URL as their prefix which can be found after '@prefix :' or '@base' in the turtle data.
+	 * In the event that there is no base the URL will be "http://www.example-domain.org#" which can be changed within this function.  
+	 */
 	public void printDataTurtle() {
 		boolean hasBase = false;
 		for (String prefix : prefixes)
 			if (prefix.equals("base:")) hasBase = true;
-
 		for (String[] triple : TRIPLE_STORE) {
 			if (triple[0].startsWith("blank_node_") || triple[0].startsWith("collection_") || !triple[0].startsWith("http")) {
 				 if (hasBase) System.out.print("<" + prefixURLs.get(prefixes.indexOf("base:")) + triple[0] + "> ");
@@ -87,10 +108,19 @@ public class TurtleParser {
 		}
 	}
 
+	/**
+	 * Returns the triple data.
+	 * @return (ArrayList<String[]>) the triple data as an ArrayList containing string arrays of length 3.
+	 */
 	public ArrayList<String[]> getData() {
 		return TRIPLE_STORE;
 	}
 
+	/**
+	 * Reads the turtle file and splits the data into unprocessed triples.
+	 * @param fileName name of the file containing the turtle data.
+	 * @return (String[]) an array of the unprocessed triples.
+	 */
 	private String[] readData(String fileName) {
 
 		String data_string = "";
@@ -158,7 +188,7 @@ public class TurtleParser {
 		}
 
 		data_string = data_string.replaceAll("\\s+", " ");
-		data_string = data_string.replaceAll("~!NEWLINE!~", " "); // HIER IS 'N VERANDERING'
+		data_string = data_string.replaceAll("~!NEWLINE!~", " ");
 		data_string = data_string.replaceAll("\\s+", " ");
 
 		data_string = harvestCollections(data_string);
@@ -176,6 +206,11 @@ public class TurtleParser {
 		return data;
 	}
 
+	/**
+	 * Separates the the unprocessed triples into their 3 fundamental components.
+	 * @param data (String[]) unprocessed triples
+	 * @return (String[][]) still uprocessed triples but now in three colums (subject, predicate, object)
+	 */
 	private String[][] splitTriples(String[] data) {
 		String[][] triples = new String[data.length-1][3];
 		String[] newTriple = new String[3];
@@ -191,13 +226,19 @@ public class TurtleParser {
 		return triples;
 	}
 
+	/**
+	 * Converts the existing data into simpler triples by looking at the usage of commas and semicolons according to the Turtle syntax.
+	 * @param triples (String[][]) unprocessed triples separated into their 3 fundamental components.
+	 */
 	private void expandTriples(String[][] triples) {
 		for (String[] triple : triples) {
 
+			// super refers to the main unprocessed component of the triple.
 			String super_subject = triple[0];
 			String super_predicate = triple[1];
 			String super_object = triple[2];
 
+			// turtle has a variety of ways to express the same data, wherever I replace a symbol with another symbol it is inorder the simplify the process.
 			if (super_object.contains(";.")) super_object = super_object.replace(";.", " . ");
 			super_object = super_object.replaceAll(";\\s+\\.", " . ");
 
@@ -237,7 +278,12 @@ public class TurtleParser {
 			if (triple[0].equals("")) TRIPLE_STORE.remove(triple);
 	}
 
+	/**
+	 * Iterates through the data and removes the whitespace.
+	 * @param triples (String[][]) unprocessed triples separated into subject, predicate, and object
+	 */
 	private void eliminateWhiteSpace(String[][] triples) {
+		// regular expressions to capture whitespace (this was my first time using regex so I'm sure it can be simplified)
 		String[] patterns = {
 			"\\s+[\\[]\\s+",
 			"\\s+[\\]]\\s+",
@@ -271,6 +317,11 @@ public class TurtleParser {
 				triple[2] = triple[2].replaceAll(patterns[i], replacements[i]);
 	}  
 
+	/**
+	 * Checks if a string contains the prefix identifier.
+	 * @param string (String) string to check for prefix identifier.
+	 * @return true if the string contains the prefix identifier, false otherwise
+	 */
 	private boolean containsPrefix(String string) {
 		for (String prefix : prefixes) {
 			if (string.contains(prefix)){
@@ -282,6 +333,9 @@ public class TurtleParser {
 		return false;
 	}
 
+	/**
+	 * Replaces the literal IDs in the data with their corresponding literals.
+	 */
 	private void insertLiterals() {
 		for (String[] triple : TRIPLE_STORE) {
 			Pattern pattern1 = Pattern.compile("~!LITERAL1<(.*?)>!~");
@@ -305,6 +359,9 @@ public class TurtleParser {
 		}
 	}
 
+	/**
+	 * Replaces the URL IDs in the data with their corresponding URLs.
+	 */
 	private void insertURLs() {
 		for (String[] triple : TRIPLE_STORE) {
 			Pattern pattern = Pattern.compile("~!URL<(.*?)>!~");
@@ -326,6 +383,9 @@ public class TurtleParser {
 		}
 	}
 
+	/**
+	 * Removes the new lines in the data.
+	 */
 	private void removeNewLines() {
 		for (String[] triple : TRIPLE_STORE) {
 			if (triple[2].contains("~!NEWLINE!~")) {
@@ -335,6 +395,9 @@ public class TurtleParser {
 		}
 	}
 
+	/**
+	 * Collects all the prefixes and stores them.
+	 */
 	private void collectPrefixes() {
 		prefixes.add("rdf:");
 		prefixURLs.add("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
@@ -347,6 +410,9 @@ public class TurtleParser {
 		}
 	}
 
+	/**
+	 * Replaces all the prefixes with their corresponding URLs.
+	 */
 	private void replacePrefixes() {
 		for (String[] triple : TRIPLE_STORE) {
 			if (triple[0].startsWith(":"))
@@ -363,6 +429,9 @@ public class TurtleParser {
 		}
 	}
 
+	/**
+	 * Removes all the triples specifying a prefix for a URL.
+	 */
 	private void removePrefixStatements() {
 		Iterator<String[]> iterator = TRIPLE_STORE.iterator();
 		while (iterator.hasNext()) {
@@ -371,6 +440,11 @@ public class TurtleParser {
 		}
 	}
 
+	/**
+	 * Collects all the content inside the blank nodes and replaces it with an ID.
+	 * @param data (String) the turtle data.
+	 * @return (String) the turtle data with the blank node content removed.
+	 */
 	private String harvestBlankNodes(String data) {
 		Stack<Integer> openBrackets = new Stack<Integer>();
 		int openBracketIndex = -1, closedBracketIndex = -1;
@@ -388,6 +462,12 @@ public class TurtleParser {
 		return data;
 	}
 
+	/**
+	 * Generates the amount of whitespace needed to replace a blank node.
+	 * @param subString (String) the content of the blank node.
+	 * @param blank_id (int) the ID of the blank node.
+	 * @return (String) whitespace.
+	 */	
 	public String whiteSpaceForBlankNode(String subString, int blank_id) {
 		int spaceRemoved = subString.length() + 2;
 		int spaceFilled = 13;
@@ -401,6 +481,11 @@ public class TurtleParser {
 		return whiteSpace;
 	}
 
+	/**
+	 * Collects all the content inside the collections and replaces it with an ID.
+	 * @param data (String) the turtle data.
+	 * @return (String) the turtle data with the collection content removed.
+	 */
 	private String harvestCollections(String data) {
 		Stack<Integer> openBrackets = new Stack<Integer>();
 		int openBracketIndex = -1, closedBracketIndex = -1;
@@ -418,6 +503,12 @@ public class TurtleParser {
 		return data;
 	}
 
+	/**
+	 * Generates the amount of whitespace needed to replace a collection.
+	 * @param subString (String) the content of the collection.
+	 * @param blank_id (int) the ID of the collection.
+	 * @return (String) whitespace.
+	 */	
 	public String whiteSpaceForCollection(String subString, int collection_id) {
 		int spaceRemoved = subString.length() + 2;
 		int spaceFilled = 18;
@@ -431,6 +522,10 @@ public class TurtleParser {
 		return whiteSpace;
 	}
 
+	/**
+	 * Replaces the existing blank node and collection IDs with a more readable version.
+	 * The previous IDs were purposefully strange inorder to prevent any conflicts with the other data.
+	 */
 	private void replaceBlankAndCollectionIDs() {
 		Pattern pattern = Pattern.compile("<(.*?)>");
 		Matcher matcher;
@@ -457,6 +552,9 @@ public class TurtleParser {
 		}
 	}
 
+	/**
+	 * Processes the content of the blank nodes and collections to add the triples to the triple storage.
+	 */
 	private void processBlankNodesAndCollections() {
 		for (int i = 0; i < COLLECTIONS.size(); i++) {
 			String collection = COLLECTIONS.get(i);
@@ -468,6 +566,11 @@ public class TurtleParser {
 		}
 	}
 
+	/**
+	 * Processes a blank node to recover the triples inside of it.
+	 * @param blank (String) content of the blank node.
+	 * @param blank_id (int) ID of the blank node.
+	 */
 	private void processBlankNode(String blank, int blank_id) {
 		blank = blank.replaceAll("\\s+", " ");
 		if (blank.endsWith(" ")) blank = blank.substring(0, blank.length()-1);
@@ -483,6 +586,11 @@ public class TurtleParser {
 		}
 	}
 
+	/**
+	 * Processes a collection to recover the triples inside of it.
+	 * @param blank (String) content of the collection.
+	 * @param blank_id (int) ID of the collection.
+	 */
 	private void processCollection(String collection, int collection_id) {
 		collection = collection.replaceAll("\\s+", " ");
 		if (collection.startsWith(" ")) collection = collection.substring(1, collection.length());
