@@ -17,11 +17,11 @@ The following resources can be useful for understanding RDF data: <https://open.
 The program makes use of a lot of regular expressions (of which my knowledge is extremely limited) to process the turtle text.
 String segments of interest (URLs, Literals, Blank Nodes, Collections) are identified, captured, and given IDs to allow for the processing of the turtle data without any interference. The IDs are replaced with their content after the data is processed.
 
+- Half-processed data
 ![semi_processed_data](https://user-images.githubusercontent.com/79271609/215045378-a9a7458a-0db1-4906-8e3c-56d891531f55.png)
-- Half-processed data -
 
+- Output data
 ![output](https://user-images.githubusercontent.com/79271609/215045417-31c1aa61-fea1-4447-9a51-3509c7dce5af.png)
-- Output data -
 
 ### Usage
 Requirements:
@@ -44,8 +44,8 @@ The methods printDataTurtle() and printDataCSV() print the data in their corresp
 
 The data is now ready for analysis.
 
+Triply: <https://triplydb.com/>
 ![triply](https://user-images.githubusercontent.com/79271609/215045695-4dc92331-fd3b-48a3-b5dd-e4fa3538e9f2.png)
-<https://triplydb.com/>
 
+RStudio: <https://posit.co/download/rstudio-desktop/>
 ![rstudio](https://user-images.githubusercontent.com/79271609/215045722-dddc4ae8-2294-47da-9b42-d9514823dd8a.png)
-<https://posit.co/download/rstudio-desktop/>
