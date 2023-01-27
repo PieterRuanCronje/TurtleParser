@@ -27,14 +27,17 @@ String segments of interest (URLs, Literals, Blank Nodes, Collections) are ident
 
 ### Usage
 Requirements:
-    * a Java installation
+    - a Java installation
 
 Clone (download) this repository to your local machine and open a terminal in that directory.
-Run the command 'javac *.java'
+Run the command:
+'javac *.java'
 
 After that you can test the program with some of the turtle data supplied in the repository by supplying the file name as a command line argument.
 
-For example 'java Main time.ttl > test.ttl' will save the expanded turtle data of 'time.ttl' to the file 'test.ttl'.
+For example
+'java Main time.ttl > test.ttl'
+will save the expanded turtle data of 'time.ttl' to the file 'test.ttl'.
 
 You can impelent TurtleParser into your Java code in the following way:
 'TurtleParser your_parser_name = new TurtleParser("the_name_of_your_turtle_file.ttl");'
