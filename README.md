@@ -36,17 +36,14 @@ Run the command:
 
 After that you can test the program with some of the turtle data supplied in the repository by supplying the file name as a command line argument.
 
-For example
-```java Main time.ttl > test.ttl```
-will save the expanded turtle data of 'time.ttl' to the file 'test.ttl'.
+For example ```java Main time.ttl > test.ttl``` will save the expanded turtle data of 'time.ttl' to the file 'test.ttl'.
 
 You can impelent TurtleParser into your Java code in the following way:
+
 ```TurtleParser your_parser_name = new TurtleParser("the_name_of_your_turtle_file.ttl");```
 
 The methods printDataTurtle() and printDataCSV() print the data in their corresponding formats. This data can then be piped into a file.
-```your_parser_name.printDataTurtle();```
-or
-```your_parser_name.printDataCSV();```
+```your_parser_name.printDataTurtle();``` or ```your_parser_name.printDataCSV();```
 
 The data is now ready for analysis.
 
