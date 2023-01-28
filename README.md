@@ -1,7 +1,7 @@
 ## RDF Turtle Parser
-    * Overview
-    * Implementation
-    * Usage
+    - Overview
+    - Implementation
+    - Usage
 
 ### Overview
 A Java program for converting standard RDF Turtle data into a simplified triple format.
