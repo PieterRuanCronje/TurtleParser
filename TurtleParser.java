@@ -570,7 +570,8 @@ public class TurtleParser {
 			if (entry.startsWith(" ")) entry = entry.substring(1);
 			if (entry.endsWith(" ")) entry = entry.substring(0, entry.length() - 1);
 			String[] predicate_and_object = entry.split("\\s");
-			if (predicate_and_object.length == 2) TRIPLE_STORE.add(new String[]{"blank_node_(id=" + blank_id + ")", predicate_and_object[0], predicate_and_object[1]});
+			if (predicate_and_object.length == 2)
+				TRIPLE_STORE.add(new String[]{"blank_node_(id=" + blank_id + ")", predicate_and_object[0], predicate_and_object[1]});
 		}
 	}
 
