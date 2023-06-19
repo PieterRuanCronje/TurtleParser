@@ -56,14 +56,14 @@ public class TurtleParser {
 	/**
 	 * Outputs the data in CSV format with a header and tabs as the delimiter.
 	 */
-	public void printDataCSV() {
+	public void printDataCSV(String delimeter) {
 		System.out.println("Subject\tPredicate\tObject");
 		int count;
 		for (String[] triple : TRIPLE_STORE) {
 			count = 0;
 			for (String component : triple) {
 				System.out.print(component );
-				if (count < 2) System.out.print("\t");
+				if (count < 2) System.out.print(delimeter);
 				count++;
 			}
 			System.out.println();
@@ -285,32 +285,32 @@ public class TurtleParser {
 	private void eliminateWhiteSpace(String[][] triples) {
 		// regular expressions to capture whitespace (this was my first time using regex, so I'm sure it can be simplified)
 		String[] patterns = {
-				"\\s+\\[\\s+",
-				"\\s+]\\s+",
-				"\\s+\\[",
-				"\\s+]+",
-				"\\[\\s+",
-				"]\\s+",
-				"\\s+;\\s+",
-				"\\s+,\\s+",
-				"\\s+;",
-				"\\s+,",
-				";\\s+",
-				",\\s+"
+			"\\s+\\[\\s+",
+			"\\s+]\\s+",
+			"\\s+\\[",
+			"\\s+]+",
+			"\\[\\s+",
+			"]\\s+",
+			"\\s+;\\s+",
+			"\\s+,\\s+",
+			"\\s+;",
+			"\\s+,",
+			";\\s+",
+			",\\s+"
 		};
 		String[] replacements = {
-				"[",
-				"]",
-				"[",
-				"]",
-				"[",
-				"]",
-				";",
-				",",
-				";",
-				",",
-				";",
-				","
+			"[",
+			"]",
+			"[",
+			"]",
+			"[",
+			"]",
+			";",
+			",",
+			";",
+			",",
+			";",
+			","
 		};
 		for (String[] triple : triples)
 			for (int i = 0; i < patterns.length; i++)
