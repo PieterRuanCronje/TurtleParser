@@ -14,7 +14,7 @@ It is also possible to upload the data to a SQL database because of its rectangu
 The following resources can be useful for understanding RDF data: <https://open.hpi.de/courses/semanticweb2016/>, <https://www.stardog.com/trainings/>
 
 ### Implementation
-The program makes use of a lot of regular expressions (of which my knowledge is extremely limited) to process the turtle text.
+The program makes use of regular expressions (of which my knowledge is limited) to process the turtle text.
 String segments of interest (URLs, Literals, Blank Nodes, Collections) are identified, captured, and given IDs to allow for the processing of the turtle data without any interference. The IDs are replaced with their content after the data is processed.
 
 - Half-processed data
@@ -32,11 +32,11 @@ Requirements:
 
 Clone (download) this repository to your local machine and open a terminal in that directory.
 Run the command:
-```javac *.java```
+```javac -d bin/ src/*.java```
 
 After that you can test the program with some of the turtle data supplied in the repository by giving the file name as a command line argument.
 
-For example ```java Main time.ttl > test.ttl``` will save the expanded turtle data of 'time.ttl' to the file 'test.ttl'.
+For example ```java -cp bin/ Main time.ttl > out/test.ttl``` will save the expanded turtle data of 'time.ttl' to the file 'test.ttl'.
 
 You can impelent TurtleParser into your Java code in the following way:
 
