@@ -20,9 +20,9 @@ public class TurtleParser {
   private final ArrayList<String[]> TRIPLE_STORE = new ArrayList<>();
 
   private final ArrayList<String> URLs = new ArrayList<>();
-  private final ArrayList<String> LITERALS1 = new ArrayList<>(); // For strings enclosed withing '...'
-  private final ArrayList<String> LITERALS2 = new ArrayList<>(); // For strings enclosed withing "..."
-  private final ArrayList<String> LITERALS3 = new ArrayList<>(); // For strings enclosed withing """..."""
+  private final ArrayList<String> LITERALS1 = new ArrayList<>(); // For strings enclosed within '...'
+  private final ArrayList<String> LITERALS2 = new ArrayList<>(); // For strings enclosed within "..."
+  private final ArrayList<String> LITERALS3 = new ArrayList<>(); // For strings enclosed within """..."""
   private final ArrayList<String> BLANK_NODES = new ArrayList<>();
   private final ArrayList<String> COLLECTIONS = new ArrayList<>();
 
