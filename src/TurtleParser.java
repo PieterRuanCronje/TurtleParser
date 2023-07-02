@@ -17,15 +17,20 @@ import java.util.ArrayList;
  */
 public class TurtleParser {
 
+  // contains data of the form [subject, predicate, object]
   private final ArrayList<String[]> TRIPLE_STORE = new ArrayList<>();
 
   private final ArrayList<String> URLs = new ArrayList<>();
+
+  // literals are seperated because they could be nested.
   private final ArrayList<String> LITERALS1 = new ArrayList<>(); // For strings enclosed within '...'
   private final ArrayList<String> LITERALS2 = new ArrayList<>(); // For strings enclosed within "..."
   private final ArrayList<String> LITERALS3 = new ArrayList<>(); // For strings enclosed within """..."""
+  
   private final ArrayList<String> BLANK_NODES = new ArrayList<>();
   private final ArrayList<String> COLLECTIONS = new ArrayList<>();
 
+  // TODO: convert to singular data structure like a hash table.
   private final ArrayList<String> prefixes = new ArrayList<>();
   private final ArrayList<String> prefixURLs = new ArrayList<>();
 
@@ -57,12 +62,12 @@ public class TurtleParser {
    * Outputs the data in CSV format with a header and tabs as the delimiter.
    */
   public void printDataCSV(String delimeter) {
-    System.out.println("Subject\tPredicate\tObject");
+    System.out.println("Subject" + delimeter + "Predicate" + delimeter + "Object");
     int count;
     for (String[] triple : TRIPLE_STORE) {
       count = 0;
       for (String component : triple) {
-        System.out.print(component );
+        System.out.print(component);
         if (count < 2) System.out.print(delimeter);
         count++;
       }
@@ -77,11 +82,14 @@ public class TurtleParser {
    */
   public void printDataTurtle() {
     boolean hasBase = false;
-    for (String prefix : prefixes)
+    for (String prefix : prefixes) {
       if (prefix.equals("base:")) {
         hasBase = true;
         break;
       }
+    }
+
+    // TODO: make this more readable
     for (String[] triple : TRIPLE_STORE) {
       if (triple[0].startsWith("blank_node_") || triple[0].startsWith("collection_") || !triple[0].startsWith("http")) {
         if (hasBase) System.out.print("<" + prefixURLs.get(prefixes.indexOf("base:")) + triple[0] + "> ");
@@ -123,6 +131,8 @@ public class TurtleParser {
    * @return (String[]) an array of the unprocessed triples.
    */
   private String[] readData(String fileName) {
+
+    // TODO: make this function more neat
 
     StringBuilder data_string = new StringBuilder();
     File file = new File(fileName);
@@ -213,18 +223,26 @@ public class TurtleParser {
    * @return (String[][]) still unprocessed triples but now in three columns (subject, predicate, object)
    */
   private String[][] splitTriples(String[] data) {
+
     String[][] triples = new String[data.length-1][3];
     String[] newTriple = new String[3];
+    
     for (int i = 0; i < data.length-1; i++) {
       newTriple = data[i].split("\\s+", 3);
       triples[i][0] = newTriple[0];
       triples[i][1] = newTriple[1];
       triples[i][2] = newTriple[2];
     }
+    
     eliminateWhiteSpace(triples);
-    for (String[] triple : triples)
-      if (triple[1].equals("a")) triple[1] = "rdf:type";
-    return triples;
+    
+    for (String[] triple : triples) {
+      if (triple[1].equals("a")) {
+        triple[1] = "rdf:type";
+      }
+    }
+    
+      return triples;
   }
 
   /**
