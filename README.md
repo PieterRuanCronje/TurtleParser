@@ -1,5 +1,5 @@
 ## NOTE
-This program is in working condition but the implementation is extremely inefficient. I now realise that a single pass tokenised approach would perform better. I learned this from _CS244: Computer Architecture_, a module that I took at Stellenbosch University where we had to implement a compiler using this approach. 
+This program is in working condition but the implementation is extremely inefficient. I now realise that a single pass tokenised approach would perform better. I learned this from _CS244: Computer Architecture_, a module that I took at Stellenbosch University where we had to implement a compiler using this method. 
 
 ## RDF Turtle Parser
     - Overview
