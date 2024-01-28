@@ -1,59 +1,61 @@
+# RDF Turtle Parser
+
 ## NOTE
-This program is in working condition but the implementation is extremely inefficient. I now realise that a single pass tokenised approach would perform better. I learned this from _CS244: Computer Architecture_, a module that I took at Stellenbosch University where we had to implement a compiler using this method. 
+This program is functional; however, the current implementation is highly inefficient. I have come to realize that a single-pass tokenized approach would yield better performance. This insight was gained from my experience in implementing a compiler using this method during the _CS244: Computer Architecture_ module at Stellenbosch University.
 
-## RDF Turtle Parser
-    - Overview
-    - Implementation
-    - Usage
+## Overview
+This Java program converts standard RDF Turtle data into a simplified triple format. The output data can be in CSV or Turtle format, and the program is easily adaptable to support other formats.
 
-### Overview
-A Java program for converting standard RDF Turtle data into a simplified triple format.
-The output data can either be in CSV or Turtle format but the program can be easily modified to allow other formats.
+Blank nodes and collections are assigned human-readable IDs, facilitating easy analysis after data processing. The processed data can be queried using a SPARQL endpoint, testable by uploading the data to platforms such as Triply ([Triply](https://triplydb.com/)). Additionally, the data can be uploaded to an SQL database due to its rectangular shape.
 
-Blank nodes and collections are given human-readable IDs to allow for easy analysis after the data is processed.
-The processed data can be queried using a SPARQL endpoint which can be tested by uploading the data to a platform like Triply (<https://triplydb.com/>).
-It is also possible to upload the data to a SQL database because of its rectangular shape.
+For a better understanding of RDF data, refer to the following resources: [Semantic Web 2016 Course](https://open.hpi.de/courses/semanticweb2016/), [Stardog Training](https://www.stardog.com/trainings/).
 
-The following resources can be useful for understanding RDF data: <https://open.hpi.de/courses/semanticweb2016/>, <https://www.stardog.com/trainings/>
-
-### Implementation
-The program makes use of regular expressions (of which my knowledge is limited) to process the turtle text.
-String segments of interest (URLs, Literals, Blank Nodes, Collections) are identified, captured, and given IDs to allow for the processing of the turtle data without any interference. The IDs are replaced with their content after the data is processed.
+## Implementation
+The program utilizes regular expressions to process Turtle text. String segments of interest (URLs, Literals, Blank Nodes, Collections) are identified, captured, and assigned IDs. These IDs are later replaced with their content after processing.
 
 - Half-processed data
 
-![semi_processed_data](https://user-images.githubusercontent.com/79271609/215045378-a9a7458a-0db1-4906-8e3c-56d891531f55.png)
+![Semi-processed data](https://user-images.githubusercontent.com/79271609/215045378-a9a7458a-0db1-4906-8e3c-56d891531f55.png)
 
 - Output data
 
-![output](https://user-images.githubusercontent.com/79271609/215045417-31c1aa61-fea1-4447-9a51-3509c7dce5af.png)
+![Output](https://user-images.githubusercontent.com/79271609/215045417-31c1aa61-fea1-4447-9a51-3509c7dce5af.png)
 
-### Usage
-Requirements:
+## Usage
+**Requirements:**
+- Java installation
 
-    - a Java installation
+Clone (download) this repository to your local machine and open a terminal in that directory. Run the command:
+```bash
+javac -d bin/ src/*.java
+```
 
-Clone (download) this repository to your local machine and open a terminal in that directory.
-Run the command:
-```javac -d bin/ src/*.java```
+After that, test the program with some Turtle data provided in the repository by giving the file name as a command line argument. For example:
+```bash
+java -cp bin/ Main time.ttl > out/test.ttl
+```
 
-After that you can test the program with some of the turtle data supplied in the repository by giving the file name as a command line argument.
+You can incorporate the `TurtleParser` into your Java code:
+```java
+TurtleParser your_parser_name = new TurtleParser("the_name_of_your_turtle_file.ttl");
+```
 
-For example ```java -cp bin/ Main time.ttl > out/test.ttl``` will save the expanded turtle data of 'time.ttl' to the file 'test.ttl'.
-
-You can impelent TurtleParser into your Java code in the following way:
-
-```TurtleParser your_parser_name = new TurtleParser("the_name_of_your_turtle_file.ttl");```
-
-The methods printDataTurtle() and printDataCSV() print the data in their corresponding formats. This data can then be piped into a file.
-```your_parser_name.printDataTurtle();``` or ```your_parser_name.printDataCSV();```
+The `printDataTurtle()` and `printDataCSV()` methods print the data in their corresponding formats. This data can then be piped into a file.
+```java
+your_parser_name.printDataTurtle();
+```
+or
+```java
+your_parser_name.printDataCSV();
+```
 
 The data is now ready for analysis.
 
-Triply: <https://triplydb.com/>
+## Tools for Data Analysis
+- Triply: [Triply](https://triplydb.com/)
 
-![triply](https://user-images.githubusercontent.com/79271609/215045695-4dc92331-fd3b-48a3-b5dd-e4fa3538e9f2.png)
+![Triply](https://user-images.githubusercontent.com/79271609/215045695-4dc92331-fd3b-48a3-b5dd-e4fa3538e9f2.png)
 
-RStudio: <https://posit.co/download/rstudio-desktop/>
+- RStudio: [RStudio](https://posit.co/download/rstudio-desktop/)
 
-![rstudio](https://user-images.githubusercontent.com/79271609/215045722-dddc4ae8-2294-47da-9b42-d9514823dd8a.png)
+![RStudio](https://user-images.githubusercontent.com/79271609/215045722-dddc4ae8-2294-47da-9b42-d9514823dd8a.png)
