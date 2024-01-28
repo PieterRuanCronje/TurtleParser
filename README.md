@@ -6,7 +6,7 @@ This program is functional; however, the current implementation is highly ineffi
 ## Overview
 This Java program converts standard RDF Turtle data into a simplified triple format. The output data can be in CSV or Turtle format, and the program is easily adaptable to support other formats.
 
-Blank nodes and collections are assigned human-readable IDs, facilitating easy analysis after data processing. The processed data can be queried using a SPARQL endpoint, testable by uploading the data to platforms such as Triply ([Triply](https://triplydb.com/)). Additionally, the data can be uploaded to an SQL database due to its rectangular shape.
+Blank nodes and collections are assigned human-readable IDs, facilitating easy analysis after data processing. The processed data can be queried using a SPARQL endpoint, testable by uploading the data to platforms such as ([Triply](https://triplydb.com/)). Additionally, the data can be uploaded to an SQL database due to its rectangular shape.
 
 For a better understanding of RDF data, refer to the following resources: [Semantic Web 2016 Course](https://open.hpi.de/courses/semanticweb2016/), [Stardog Training](https://www.stardog.com/trainings/).
 
@@ -52,10 +52,10 @@ your_parser_name.printDataCSV();
 The data is now ready for analysis.
 
 ## Tools for Data Analysis
-- Triply: [Triply](https://triplydb.com/)
+- [Triply](https://triplydb.com/):
 
 ![Triply](https://user-images.githubusercontent.com/79271609/215045695-4dc92331-fd3b-48a3-b5dd-e4fa3538e9f2.png)
 
-- RStudio: [RStudio](https://posit.co/download/rstudio-desktop/)
+- [RStudio](https://posit.co/download/rstudio-desktop/):
 
 ![RStudio](https://user-images.githubusercontent.com/79271609/215045722-dddc4ae8-2294-47da-9b42-d9514823dd8a.png)
