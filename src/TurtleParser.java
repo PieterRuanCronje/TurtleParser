@@ -9,7 +9,7 @@ import java.util.ArrayList;
 /**
  * A Java program for converting standard RDF Turtle data into a simplified triple format.
  * The output data can either be in CSV or Turtle format but the program can be easily modified to allow other formats.
- * Blank nodes and collections are given human-readable IDs to allow for hassle-free analysis after the data is processed.
+ * Blank nodes and collections are given human-readable IDs to allow for easier analysis after the data is processed.
  * The processed data can be queried using a SPARQL endpoint which can be tested by uploading the data to a platform like {@link <a href="https://triplydb.com/">Triply</a>}.
  * It is also possible to upload the data to a SQL database because of its rectangular shape.
  * The following resources can be useful for understanding RDF data: {@link <a href="https://open.hpi.de/courses/semanticweb2016/">Open HPI Linked Data Engineering</a>}, {@link <a href="https://www.stardog.com/trainings/">Stardog Trainings</a>}
